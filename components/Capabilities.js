@@ -1,0 +1,105 @@
+const { motion } = window.Motion;
+const FadingVideo = window.FadingVideo;
+const ImageIcon = window.ImageIcon;
+const MovieIcon = window.MovieIcon;
+const LightbulbIcon = window.LightbulbIcon;
+
+const CAP_VIDEO =
+  'https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260418_094631_d30ab262-45ee-4b7d-99f3-5d5848c8ef13.mp4';
+
+const CARDS = [
+  {
+    title: 'AI Scenery',
+    body: 'AI analyzes your product to create indistinguishable natural environments — from Icelandic cliffs to misty forests.',
+    Icon: ImageIcon,
+    tags: ['Natural Context', 'Photo Realism', 'Infinite Settings', 'Eco-Vibe'],
+  },
+  {
+    title: 'Batch Production',
+    body: 'Style your entire product line in minutes. Create a unified visual identity for catalogues and social media without weeks of retouching.',
+    Icon: MovieIcon,
+    tags: ['Scale Fast', 'Visual Consistency', 'Time Saver', 'Ready to Post'],
+  },
+  {
+    title: 'Smart Lighting',
+    body: 'Automatic lighting and material adjustment. Achieve flawless integration with realistic shadows and sunlight.',
+    Icon: LightbulbIcon,
+    tags: ['Ray Tracing', 'Physical Shadows', 'Studio Quality', 'Sunlight Sync'],
+  },
+];
+
+function CapabilityCard({ title, body, Icon, tags, index }) {
+  return (
+    <motion.div
+      initial={{ filter: 'blur(10px)', opacity: 0, y: 24 }}
+      whileInView={{ filter: 'blur(0px)', opacity: 1, y: 0 }}
+      viewport={{ once: true, amount: 0.2 }}
+      transition={{ duration: 0.7, ease: 'easeOut', delay: 0.1 * index }}
+      className="liquid-glass rounded-[1.25rem] p-6 min-h-[360px] flex flex-col"
+    >
+      {/* Top row: icon + tags */}
+      <div className="flex items-start justify-between gap-4">
+        <div className="liquid-glass w-11 h-11 rounded-[0.75rem] flex items-center justify-center shrink-0">
+          <Icon className="h-6 w-6 text-white" />
+        </div>
+        <div className="flex flex-wrap justify-end gap-1.5 max-w-[70%]">
+          {tags.map((tag) => (
+            <span
+              key={tag}
+              className="liquid-glass rounded-full px-3 py-1 text-[11px] text-white/90 font-body whitespace-nowrap"
+            >
+              {tag}
+            </span>
+          ))}
+        </div>
+      </div>
+
+      {/* Spacer */}
+      <div className="flex-1" />
+
+      {/* Bottom: title + body */}
+      <div className="mt-6">
+        <h3 className="font-heading italic text-white text-3xl md:text-4xl tracking-[-1px] leading-none">
+          {title}
+        </h3>
+        <p className="mt-3 text-sm text-white/90 font-body font-light leading-snug max-w-[32ch]">
+          {body}
+        </p>
+      </div>
+    </motion.div>
+  );
+}
+
+function Capabilities() {
+  return (
+    <section className="relative min-h-screen w-full bg-black overflow-hidden">
+      {/* Full-bleed background video */}
+      <FadingVideo
+        src={CAP_VIDEO}
+        className="absolute inset-0 w-full h-full object-cover z-0"
+      />
+
+      {/* Content */}
+      <div className="relative z-10 px-8 md:px-16 lg:px-20 pt-24 pb-10 flex flex-col min-h-screen">
+        {/* Header */}
+        <div className="mb-auto">
+          <p className="text-sm font-body text-white/80 mb-6">// Capabilities</p>
+          <h2 className="font-heading italic text-white text-6xl md:text-7xl lg:text-[6rem] leading-[0.9] tracking-[-3px]">
+            Production
+            <br />
+            evolved
+          </h2>
+        </div>
+
+        {/* Cards grid */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-16">
+          {CARDS.map((card, i) => (
+            <CapabilityCard key={card.title} {...card} index={i} />
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+window.Capabilities = Capabilities;
