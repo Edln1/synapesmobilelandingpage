@@ -1,0 +1,771 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Synapses — AI Companion</title>
+  <meta name="description" content="Synapses is an AI companion first — chat, voice, and memory with Ava." />
+  <!--
+    GitHub Pages package — single site entry: this index.html
+    Media (required next to this file):
+      videos/hero.mp4      — first-slide wallpaper
+      videos/slide2.mp4    — second-slide wallpaper
+      videos/ava.mp4       — Ava talking demo (with audio)
+      videos/ava-poster.png
+  -->
+  <meta name="synapses:ava-phone" content="+18105250269" />
+
+  <!-- Geist Sans (same family family used on modern AI product sites like Godela) -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/geist@1.3.1/dist/fonts/geist-sans/style.min.css" />
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Geist Sans"', 'Geist', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+          },
+          colors: {
+            g: {
+              bg: '#050505',
+              surface: '#0a0a0a',
+              muted: '#8a8a8a',
+              faint: '#5c5c5c',
+              line: 'rgba(255,255,255,0.08)',
+              accent: '#7c6af7',
+            },
+          },
+        },
+      },
+    };
+  </script>
+
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    html {
+      scroll-behavior: smooth;
+    }
+    html, body {
+      background: #000;
+      color: #fafafa;
+      font-family: 'Geist Sans', Geist, ui-sans-serif, system-ui, sans-serif;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      overflow-x: hidden;
+    }
+    #root { min-height: 100vh; background: #000; }
+
+    /* First slide = exact full viewport (no 92vh gap / bottom margin strip) */
+    .hero-full {
+      min-height: 100vh;
+      min-height: 100dvh;
+      height: 100vh;
+      height: 100dvh;
+    }
+
+    /* Godela-like: soft radial glow, not heavy liquid glass */
+    .hero-glow {
+      background:
+        radial-gradient(ellipse 80% 50% at 50% -10%, rgba(124, 106, 247, 0.16) 0%, transparent 55%),
+        radial-gradient(ellipse 40% 30% at 90% 40%, rgba(0, 217, 168, 0.05) 0%, transparent 50%),
+        #050505;
+    }
+
+    .section-num {
+      font-variant-numeric: tabular-nums;
+      letter-spacing: 0.08em;
+      color: rgba(255, 255, 255, 0.35);
+      font-size: 0.75rem;
+      font-weight: 500;
+    }
+
+    .h-display {
+      font-weight: 500;
+      letter-spacing: -0.04em;
+      line-height: 1.05;
+    }
+
+    .link-arrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      transition: opacity 0.15s ease, gap 0.15s ease;
+    }
+    .link-arrow:hover { opacity: 0.85; gap: 0.55rem; }
+
+    .card-quiet {
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      background: rgba(255, 255, 255, 0.02);
+      border-radius: 1rem;
+      transition: border-color 0.2s ease, background 0.2s ease;
+    }
+    .card-quiet:hover {
+      border-color: rgba(255, 255, 255, 0.14);
+      background: rgba(255, 255, 255, 0.035);
+    }
+
+    .card-invert {
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      background: rgba(0, 0, 0, 0.25);
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
+      border-radius: 1rem;
+      transition: background 0.25s ease, border-color 0.25s ease, backdrop-filter 0.25s ease;
+    }
+    .card-invert:hover {
+      background: rgba(255, 255, 255, 0.04);
+      border-color: rgba(255, 255, 255, 0.22);
+      backdrop-filter: blur(2px);
+      -webkit-backdrop-filter: blur(2px);
+    }
+
+    .nav-blur {
+      background: rgba(5, 5, 5, 0.42);
+      backdrop-filter: blur(20px) saturate(140%);
+      -webkit-backdrop-filter: blur(20px) saturate(140%);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06);
+      transition: background 0.35s ease, border-color 0.35s ease, box-shadow 0.35s ease;
+    }
+    /* Over slide-2 wallpaper — lighter frost so header doesn’t go murky dark */
+    .nav-blur.nav-on-slide2 {
+      background: rgba(255, 255, 255, 0.06);
+      backdrop-filter: blur(22px) saturate(160%);
+      -webkit-backdrop-filter: blur(22px) saturate(160%);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+      box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.14),
+        0 8px 32px rgba(0, 0, 0, 0.12);
+    }
+
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      background: #fafafa;
+      color: #0a0a0a;
+      font-weight: 500;
+      font-size: 0.9rem;
+      padding: 0.7rem 1.15rem;
+      border-radius: 9999px;
+      transition: background 0.15s ease, transform 0.15s ease;
+    }
+    .btn-primary:hover { background: #e8e8e8; }
+
+    .btn-ghost {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      color: rgba(255, 255, 255, 0.75);
+      font-weight: 500;
+      font-size: 0.9rem;
+      padding: 0.7rem 1.15rem;
+      border-radius: 9999px;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      transition: border-color 0.15s ease, color 0.15s ease;
+    }
+    .btn-ghost:hover {
+      border-color: rgba(255, 255, 255, 0.28);
+      color: #fff;
+    }
+
+    /*
+      Same phone math as space-landing/index.html:
+      9/16 frame · hairline chrome · L/R crop via wider video · slight bottom crop.
+      object-position nudged down so green S2S + white toggle stay fully on-screen.
+    */
+    .ava-stage {
+      position: relative;
+      width: min(290px, 70vw);
+      flex-shrink: 0;
+    }
+    .ava-phone-chrome {
+      border-radius: 1.45rem;
+      padding: 1px;
+      background: rgba(255, 255, 255, 0.08);
+    }
+    .ava-frame {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 9 / 16;
+      border-radius: 1.35rem;
+      overflow: hidden;
+      background: #000;
+      box-shadow:
+        0 0 0 1px rgba(255, 255, 255, 0.12),
+        0 28px 90px rgba(0, 0, 0, 0.6),
+        0 0 70px rgba(124, 106, 247, 0.18);
+    }
+    /*
+      ava-talk.mp4 frame: status/recording bar sits above purple Synapses chrome.
+      Crop ONLY that strip (~4–5% of source height). Do not push past the purple header.
+      Side crop still kills L/R black gutters; green S2S + white toggle stay in view.
+    */
+    .ava-frame video {
+      position: absolute;
+      left: 50%;
+      top: 0;
+      width: 118%;
+      height: 112%;
+      /* -4.5% shifts status bar out; purple logo row remains */
+      transform: translate(-50%, -4.5%);
+      object-fit: cover;
+      object-position: center top;
+      display: block;
+    }
+    .ava-mute-btn {
+      position: absolute;
+      right: 10px;
+      bottom: 10px;
+      z-index: 5;
+      width: 36px;
+      height: 36px;
+      border-radius: 9999px;
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      background: rgba(0, 0, 0, 0.55);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: background 0.15s ease, border-color 0.15s ease;
+    }
+    .ava-mute-btn:hover {
+      background: rgba(0, 0, 0, 0.72);
+      border-color: rgba(255, 255, 255, 0.32);
+    }
+    .ava-mute-hint {
+      margin-top: 6px;
+      text-align: center;
+      font-size: 11px;
+      color: rgba(255, 255, 255, 0.35);
+      font-weight: 500;
+    }
+
+    /* Match index: copy + phone as one centered cluster */
+    .ava-hero-cluster {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 1.75rem;
+      width: 100%;
+      max-width: 920px;
+      margin: 0 auto;
+    }
+    @media (min-width: 900px) {
+      .ava-hero-cluster {
+        flex-direction: row;
+        align-items: center;
+        gap: 2rem;
+      }
+    }
+    .ava-hero-copy {
+      flex: 1 1 auto;
+      max-width: 380px;
+      text-align: center;
+    }
+    @media (min-width: 900px) {
+      .ava-hero-copy { text-align: left; }
+    }
+
+    .divider {
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.08), transparent);
+    }
+
+    /*
+      Godela-inspired scroll reveals — soft, sequential, not flashy.
+      Items rise + fade once when they enter the viewport.
+    */
+    .reveal {
+      opacity: 0;
+      transform: translateY(28px);
+      filter: blur(6px);
+      transition:
+        opacity 0.85s cubic-bezier(0.22, 1, 0.36, 1),
+        transform 0.85s cubic-bezier(0.22, 1, 0.36, 1),
+        filter 0.85s cubic-bezier(0.22, 1, 0.36, 1);
+      transition-delay: var(--reveal-delay, 0ms);
+      will-change: opacity, transform, filter;
+    }
+    .reveal.is-in {
+      opacity: 1;
+      transform: translateY(0);
+      filter: blur(0);
+    }
+    .reveal-from-left {
+      transform: translateX(-20px) translateY(12px);
+    }
+    .reveal-from-left.is-in {
+      transform: translateX(0) translateY(0);
+    }
+    .reveal-from-right {
+      transform: translateX(20px) translateY(12px);
+    }
+    .reveal-from-right.is-in {
+      transform: translateX(0) translateY(0);
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .reveal {
+        opacity: 1;
+        transform: none;
+        filter: none;
+        transition: none;
+      }
+    }
+  </style>
+</head>
+<body class="font-sans bg-[#050505] text-[#fafafa]">
+  <div id="root"></div>
+
+  <script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+
+  <script type="text/babel">
+    const { useState, useEffect, useRef } = React;
+
+    const APP = {
+      open: '#companion', // change to your live app URL when ready
+      avaPhone: 'tel:+18105250269',
+    };
+
+    // All media lives in ./videos/ (upload this folder with index.html)
+    const AVA_PORTRAIT = 'videos/ava.mp4';
+    const AVA_POSTER = 'videos/ava-poster.png';
+    const HERO_VIDEO = 'videos/hero.mp4';
+    const SLIDE2_VIDEO = 'videos/slide2.mp4';
+
+    const Arrow = () => (
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+        <path d="M7 17L17 7" /><path d="M7 7h10v10" />
+      </svg>
+    );
+
+    /**
+     * Scroll reveal — Godela-style sequential load-in after the hero.
+     * once: true keeps it calm (no re-animating on every scroll).
+     */
+    function Reveal({
+      children,
+      className = '',
+      delay = 0,
+      from = 'up', // 'up' | 'left' | 'right'
+      as: Tag = 'div',
+      threshold = 0.18,
+    }) {
+      const ref = useRef(null);
+      const [inView, setInView] = useState(false);
+
+      useEffect(() => {
+        const el = ref.current;
+        if (!el) return;
+        if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+          setInView(true);
+          return;
+        }
+        const obs = new IntersectionObserver(
+          ([entry]) => {
+            if (entry.isIntersecting) {
+              setInView(true);
+              obs.disconnect();
+            }
+          },
+          { threshold, rootMargin: '0px 0px -8% 0px' }
+        );
+        obs.observe(el);
+        return () => obs.disconnect();
+      }, [threshold]);
+
+      const fromClass =
+        from === 'left' ? 'reveal-from-left' : from === 'right' ? 'reveal-from-right' : '';
+
+      return (
+        <Tag
+          ref={ref}
+          className={`reveal ${fromClass} ${inView ? 'is-in' : ''} ${className}`}
+          style={{ '--reveal-delay': `${delay}ms` }}
+        >
+          {children}
+        </Tag>
+      );
+    }
+
+    function Nav() {
+      // Lighten glass only while header sits over slide-2 (#product) video
+      const [onSlide2, setOnSlide2] = useState(false);
+
+      useEffect(() => {
+        const section = document.getElementById('product');
+        if (!section) return;
+
+        const update = () => {
+          const r = section.getBoundingClientRect();
+          // Header band is ~0–56px; treat as “on slide 2” when product covers that band
+          const headerBottom = 56;
+          const coversHeader = r.top < headerBottom && r.bottom > headerBottom;
+          setOnSlide2(coversHeader);
+        };
+
+        update();
+        window.addEventListener('scroll', update, { passive: true });
+        window.addEventListener('resize', update);
+        return () => {
+          window.removeEventListener('scroll', update);
+          window.removeEventListener('resize', update);
+        };
+      }, []);
+
+      return (
+        <header className={`fixed top-0 left-0 right-0 z-50 nav-blur${onSlide2 ? ' nav-on-slide2' : ''}`}>
+          <div className="max-w-6xl mx-auto px-5 sm:px-8 h-14 flex items-center justify-between">
+            <a href="#top" className="text-[15px] font-medium tracking-tight text-white">
+              Synapses
+            </a>
+            <nav className="hidden md:flex items-center gap-8 text-[13px] text-white/55 font-medium">
+              <a href="#product" className="hover:text-white transition-colors">Product</a>
+              <a href="#companion" className="hover:text-white transition-colors">Companion</a>
+              <a href="#apps" className="hover:text-white transition-colors">Applications</a>
+            </nav>
+            <a href={APP.open} className="btn-primary text-[13px] !py-2 !px-4">
+              Open app <Arrow />
+            </a>
+          </div>
+        </header>
+      );
+    }
+
+    function Hero() {
+      return (
+        <section id="top" className="relative hero-full w-full flex flex-col bg-black overflow-hidden">
+          {/* Full-bleed wallpaper — fills entire first viewport */}
+          <div className="absolute inset-0 overflow-hidden pointer-events-none z-0">
+            <video
+              src={HERO_VIDEO}
+              autoPlay
+              muted
+              loop
+              playsInline
+              className="absolute inset-0 w-full h-full object-cover object-center"
+            />
+            {/* Light bottom fade only for text — not a solid margin bar */}
+            <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-black/15" />
+          </div>
+
+          {/* pt-14 clears fixed nav without shrinking the video layer (video is absolute full) */}
+          <div className="relative z-10 flex-1 flex flex-col justify-center max-w-6xl mx-auto w-full px-5 sm:px-8 pt-20 pb-16 md:pt-24 md:pb-20">
+            <p className="text-[12px] font-medium text-white/70 tracking-wide mb-6 drop-shadow-sm">
+              AI companion · chat · voice · memory
+            </p>
+            <h1 className="h-display text-[2.5rem] sm:text-5xl md:text-6xl lg:text-[4.25rem] max-w-3xl text-white drop-shadow-md">
+              Synapses is the frontier of AI companionship.
+            </h1>
+            <p className="mt-6 text-base md:text-lg text-white/85 max-w-xl leading-relaxed font-normal drop-shadow-sm">
+              Ava learns how you work and talk — then stays with you. Not a chatbot tab.
+              A companion for the long run, with tools when you need them.
+            </p>
+            <div className="mt-9 flex flex-wrap items-center gap-3">
+              <a href={APP.open} className="btn-primary">
+                Meet Ava <Arrow />
+              </a>
+              <a href={APP.avaPhone} className="btn-ghost">
+                Talk to Ava
+              </a>
+            </div>
+            <p className="mt-5 text-[12px] text-white/30 font-medium">
+              Free plan · Pro from $12/mo · No credit card
+            </p>
+          </div>
+        </section>
+      );
+    }
+
+    function Product() {
+      const steps = [
+        {
+          n: '01',
+          title: 'Talk',
+          body: 'Chat or live voice with Ava. She listens, remembers context, and answers like someone who already knows you.',
+        },
+        {
+          n: '02',
+          title: 'Stay',
+          body: 'Memory and presence across sessions — not a blank slate every time you open the app.',
+        },
+        {
+          n: '03',
+          title: 'Extend',
+          body: 'Tools, sourcing, jobs, and hub when you need them — secondary to the companion, never the other way around.',
+        },
+      ];
+
+      return (
+        <section id="product" className="relative min-h-screen py-24 md:py-32 px-5 sm:px-8 overflow-hidden">
+          {/* Slide 2 full-bleed background */}
+          <div className="absolute inset-0 z-0 pointer-events-none">
+            <video
+              src={SLIDE2_VIDEO}
+              autoPlay
+              muted
+              loop
+              playsInline
+              className="absolute inset-0 w-full h-full object-cover"
+            />
+            {/* Light scrim only — keep wallpaper visible */}
+            <div className="absolute inset-0 bg-black/35" />
+          </div>
+
+          <div className="relative z-10 max-w-6xl mx-auto">
+            <Reveal>
+              <p className="section-num mb-4 text-white/50">1 · What we do</p>
+            </Reveal>
+            <Reveal delay={90}>
+              <h2 className="h-display text-3xl sm:text-4xl md:text-5xl max-w-2xl text-white drop-shadow-md">
+                We’re building AI that feels present — not just productive.
+              </h2>
+            </Reveal>
+            <Reveal delay={180}>
+              <p className="mt-5 text-white/75 max-w-xl text-[15px] md:text-base leading-relaxed drop-shadow-sm">
+                Synapses starts with Ava. Everything else in the product supports that relationship.
+              </p>
+            </Reveal>
+
+            <div className="mt-14 grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-5">
+              {steps.map((s, i) => (
+                <Reveal key={s.n} delay={120 + i * 140}>
+                  <div className="card-invert p-6 md:p-7 h-full">
+                    <p className="section-num mb-5 text-white/50">{s.n}</p>
+                    <h3 className="text-xl font-medium tracking-tight text-white mb-3">{s.title}</h3>
+                    <p className="text-[14px] text-white/70 leading-relaxed">{s.body}</p>
+                  </div>
+                </Reveal>
+              ))}
+            </div>
+          </div>
+        </section>
+      );
+    }
+
+    function MuteIcon({ muted }) {
+      if (muted) {
+        return (
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+            <path d="M11 5L6 9H2v6h4l5 4V5z" />
+            <line x1="23" y1="9" x2="17" y2="15" />
+            <line x1="17" y1="9" x2="23" y2="15" />
+          </svg>
+        );
+      }
+      return (
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+          <path d="M11 5L6 9H2v6h4l5 4V5z" />
+          <path d="M19.07 4.93a10 10 0 0 1 0 14.14" />
+          <path d="M15.54 8.46a5 5 0 0 1 0 7.07" />
+        </svg>
+      );
+    }
+
+    function AvaPortrait() {
+      const videoRef = useRef(null);
+      const [muted, setMuted] = useState(true);
+
+      // Keep DOM muted state in sync with React (do NOT hardcode muted on <video>)
+      useEffect(() => {
+        const v = videoRef.current;
+        if (!v) return;
+        v.muted = muted;
+        v.volume = 1;
+      }, [muted]);
+
+      const toggleMute = (e) => {
+        if (e) {
+          e.preventDefault();
+          e.stopPropagation();
+        }
+        const v = videoRef.current;
+        if (!v) return;
+        const nextMuted = !muted;
+        v.muted = nextMuted;
+        if (!nextMuted) {
+          v.volume = 1;
+          // User gesture — safe to play with sound
+          const p = v.play();
+          if (p && typeof p.catch === 'function') p.catch(() => {});
+        }
+        setMuted(nextMuted);
+      };
+
+      return (
+        <div className="ava-stage">
+          <div className="ava-phone-chrome">
+            <div className="ava-frame">
+              <video
+                ref={videoRef}
+                src={AVA_PORTRAIT}
+                poster={AVA_POSTER}
+                autoPlay
+                playsInline
+                loop
+                muted={muted}
+                preload="auto"
+              />
+              <button
+                type="button"
+                className="ava-mute-btn"
+                onClick={toggleMute}
+                aria-label={muted ? 'Unmute Ava' : 'Mute Ava'}
+                title={muted ? 'Unmute' : 'Mute'}
+              >
+                <MuteIcon muted={muted} />
+              </button>
+            </div>
+          </div>
+          <p className="mt-3 text-center text-[13px] font-medium text-white/80">Ava</p>
+          <p className="text-center text-[12px] text-white/35">AI companion</p>
+          <p className="ava-mute-hint">{muted ? 'Tap speaker to hear her' : 'Sound on'}</p>
+        </div>
+      );
+    }
+
+    function Companion() {
+      return (
+        <section id="companion" className="py-20 md:py-28 px-5 sm:px-8 border-t border-white/[0.06]">
+          <div className="max-w-6xl mx-auto">
+            <div className="ava-hero-cluster">
+              <Reveal from="left" className="ava-hero-copy" delay={40}>
+                <p className="section-num mb-4">2 · Companion</p>
+                <h2 className="h-display text-3xl sm:text-4xl md:text-[2.75rem] text-white">
+                  Built around Ava
+                </h2>
+                <p className="mt-5 text-white/45 text-[15px] md:text-base leading-relaxed mx-auto md:mx-0 max-w-sm">
+                  Meet your companion — she talks, listens, and remembers.
+                  Call her, message her, or just think out loud.
+                </p>
+                <a href={APP.open} className="btn-primary mt-8">
+                  Talk with Ava <Arrow />
+                </a>
+              </Reveal>
+
+              <Reveal from="right" delay={180}>
+                <AvaPortrait />
+              </Reveal>
+            </div>
+          </div>
+        </section>
+      );
+    }
+
+    function Applications() {
+      const apps = [
+        { title: 'Neural chat', body: 'The main room — conversation with memory and presence.' },
+        { title: 'Live voice', body: 'Speech-to-speech that feels like a real call, not dictation.' },
+        { title: 'Phone call', body: 'Reach Ava when you’re away from the desk.' },
+        { title: 'Tools hub', body: 'Curated AI tools when the companion needs backup.' },
+        { title: 'Sourcing', body: 'Optional deep-work agent for supplier research.' },
+        { title: 'Health & notes', body: 'Reflect, capture, and stay grounded mid-flow.' },
+      ];
+
+      return (
+        <section id="apps" className="py-24 md:py-32 px-5 sm:px-8 border-t border-white/[0.06]">
+          <div className="max-w-6xl mx-auto">
+            <Reveal>
+              <p className="section-num mb-4">3 · Applications</p>
+            </Reveal>
+            <Reveal delay={90}>
+              <h2 className="h-display text-3xl sm:text-4xl md:text-5xl max-w-2xl text-white">
+                One companion. Rooms around her.
+              </h2>
+            </Reveal>
+            <Reveal delay={180}>
+              <p className="mt-5 text-white/45 max-w-xl text-[15px] leading-relaxed">
+                Same modules as the Synapses app — companion first, everything else optional.
+              </p>
+            </Reveal>
+
+            <div className="mt-14 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-4">
+              {apps.map((a, i) => (
+                <Reveal key={a.title} delay={100 + i * 90}>
+                  <a href={APP.open} className="card-quiet p-5 md:p-6 block group h-full">
+                    <div className="flex items-start justify-between gap-3 mb-3">
+                      <h3 className="text-[15px] font-medium tracking-tight text-white">{a.title}</h3>
+                      <span className="text-white/25 group-hover:text-white/50 transition-colors"><Arrow /></span>
+                    </div>
+                    <p className="text-[13px] text-white/40 leading-relaxed">{a.body}</p>
+                  </a>
+                </Reveal>
+              ))}
+            </div>
+          </div>
+        </section>
+      );
+    }
+
+    function Cta() {
+      return (
+        <section className="py-24 md:py-32 px-5 sm:px-8 border-t border-white/[0.06]">
+          <div className="max-w-3xl mx-auto text-center">
+            <Reveal>
+              <h2 className="h-display text-3xl sm:text-4xl md:text-5xl text-white">
+                What do you want to talk about?
+              </h2>
+            </Reveal>
+            <Reveal delay={120}>
+              <p className="mt-5 text-white/45 text-[15px] md:text-base">
+                Start free. No credit card. Ava is ready when you are.
+              </p>
+            </Reveal>
+            <Reveal delay={220}>
+              <div className="mt-9 flex flex-wrap items-center justify-center gap-3">
+                <a href={APP.open} className="btn-primary">
+                  Open Synapses <Arrow />
+                </a>
+                <a href={APP.avaPhone} className="btn-ghost">
+                  Talk to Ava
+                </a>
+              </div>
+            </Reveal>
+          </div>
+        </section>
+      );
+    }
+
+    function Footer() {
+      return (
+        <footer className="border-t border-white/[0.06] py-10 px-5 sm:px-8">
+          <div className="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4 text-[13px]">
+            <span className="font-medium text-white/80">Synapses</span>
+            <div className="flex gap-6 text-white/35">
+              <a href="#product" className="hover:text-white/70 transition-colors">Product</a>
+              <a href="#companion" className="hover:text-white/70 transition-colors">Companion</a>
+              <a href={APP.open} className="hover:text-white/70 transition-colors">Open app</a>
+            </div>
+            <span className="text-white/25 text-[12px]">© {new Date().getFullYear()} · Geist layout study</span>
+          </div>
+        </footer>
+      );
+    }
+
+    function App() {
+      return (
+        <main>
+          <Nav />
+          <Hero />
+          <div className="divider max-w-6xl mx-auto" />
+          <Product />
+          <Companion />
+          <Applications />
+          <Cta />
+          <Footer />
+        </main>
+      );
+    }
+
+    ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+  </script>
+</body>
+</html>
