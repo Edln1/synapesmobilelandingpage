@@ -14,6 +14,7 @@
       videos/ava-poster.png
       videos/rooms.jpg     — banner behind “One companion. Rooms around her.”
       videos/readytotalk.jpg — banner behind “What do you want to talk about?”
+      videos/aurora.js      — deep-space aurora engine, banner behind “Built around Ava”
   -->
   <meta name="synapses:ava-phone" content="+18105250269" />
 
@@ -246,6 +247,31 @@
       font-size: 11px;
       color: rgba(255, 255, 255, 0.35);
       font-weight: 500;
+    }
+
+    /* Deep-space aurora — scoped banner behind the Companion section.
+       #companion also carries Tailwind's "relative overflow-hidden" classes;
+       these plain rules are a fallback so the stacking still works even if
+       the Tailwind CDN is slow/unavailable when the page first paints. */
+    #companion {
+      position: relative;
+      overflow: hidden;
+    }
+    #deepSpaceLayer {
+      position: absolute;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
+      overflow: hidden;
+      background: #000;
+      opacity: 1;
+    }
+    #deepSpaceLayer canvas {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      display: block;
     }
 
     /* Match index: copy + phone as one centered cluster */
@@ -638,8 +664,11 @@
 
     function Companion() {
       return (
-        <section id="companion" className="py-20 md:py-28 px-5 sm:px-8 border-t border-white/[0.06]">
-          <div className="max-w-6xl mx-auto">
+        <section id="companion" className="relative overflow-hidden py-20 md:py-28 px-5 sm:px-8 border-t border-white/[0.06]">
+          <div id="deepSpaceLayer" aria-hidden="true">
+            <canvas id="deepSpaceCanvas"></canvas>
+          </div>
+          <div className="relative z-10 max-w-6xl mx-auto">
             <div className="ava-hero-cluster">
               <Reveal from="left" className="ava-hero-copy" delay={40}>
                 <p className="section-num mb-4">2 · Companion</p>
@@ -788,5 +817,10 @@
 
     ReactDOM.createRoot(document.getElementById('root')).render(<App />);
   </script>
+
+  <!-- Deep-space aurora engine — renders into #deepSpaceLayer/#deepSpaceCanvas
+       inside the Companion section above. Plain JS (not Babel/JSX); binds on
+       window 'load', so it's safe to load after the React root mounts. -->
+  <script src="videos/aurora.js"></script>
 </body>
 </html>
