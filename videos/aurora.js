@@ -1103,7 +1103,13 @@
   window.addEventListener('load', function(){
     migrateLegacy();
     bind();
-    bindExploreCamera();
+    // NOTE: bindExploreCamera() is intentionally never called in this
+    // standalone embed. It attaches window-level wheel/touchmove/pointerdown
+    // listeners (drag-to-look, scroll-to-travel) with e.preventDefault() —
+    // fine for the full interactive app, but since this embed is always
+    // "on" as a passive decorative background, those listeners would hijack
+    // scrolling and pinch-zoom across the ENTIRE host page, not just the
+    // banner. This is a pure idle-drift background; no camera controls.
     watchChatEmptyState();
     syncDom();
     updateMenuUi();
@@ -1111,6 +1117,6 @@
   });
   // In case script runs after load
   if(document.readyState === 'complete' || document.readyState === 'interactive'){
-    setTimeout(function(){ bind(); bindExploreCamera(); syncDom(); updateMenuUi(); if(active()) start(); }, 0);
+    setTimeout(function(){ bind(); watchChatEmptyState(); syncDom(); updateMenuUi(); if(active()) start(); }, 0);
   }
 })();
