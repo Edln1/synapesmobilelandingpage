@@ -462,6 +462,114 @@
       color: rgba(255, 255, 255, 0.45);
       line-height: 1.6;
     }
+    /* Capabilities grid */
+    .capability-col {
+      padding: 0 0 0 0;
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      padding-top: 1.5rem;
+    }
+    @media (min-width: 768px) {
+      .capability-col {
+        border-top: none;
+        border-left: 1px solid rgba(255, 255, 255, 0.08);
+        padding-top: 0;
+        padding-left: 1.5rem;
+      }
+    }
+    .capability-letter {
+      font-family: 'Geist Sans', Geist, ui-sans-serif, system-ui, sans-serif;
+      font-weight: 500;
+      font-size: 0.8rem;
+      letter-spacing: 0.04em;
+      color: #7c6af7;
+    }
+    .capability-title {
+      margin-top: 0.6rem;
+      font-weight: 500;
+      letter-spacing: -0.015em;
+      color: #fafafa;
+      font-size: 1rem;
+    }
+    .capability-body {
+      margin-top: 0.5rem;
+      color: rgba(255, 255, 255, 0.45);
+      font-size: 13px;
+      line-height: 1.6;
+    }
+    /* Research notes */
+    .note-card {
+      display: block;
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      padding: 1.75rem 0;
+      text-decoration: none;
+      transition: padding-left 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .note-card:last-child {
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    }
+    .note-card:hover {
+      padding-left: 0.5rem;
+    }
+    .note-meta {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      font-size: 12px;
+      font-weight: 500;
+      letter-spacing: 0.02em;
+      color: rgba(255, 255, 255, 0.4);
+      text-transform: uppercase;
+    }
+    .note-meta .dot {
+      width: 3px;
+      height: 3px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.3);
+    }
+    .note-title {
+      margin-top: 0.6rem;
+      font-family: 'Geist Sans', Geist, ui-sans-serif, system-ui, sans-serif;
+      font-weight: 500;
+      letter-spacing: -0.015em;
+      color: #fafafa;
+      font-size: 1.15rem;
+      transition: color 0.3s ease;
+    }
+    .note-card:hover .note-title {
+      color: #a599ff;
+    }
+    .note-body {
+      margin-top: 0.5rem;
+      color: rgba(255, 255, 255, 0.45);
+      font-size: 13.5px;
+      line-height: 1.6;
+      max-width: 34rem;
+    }
+    .note-arrow {
+      display: inline-flex;
+      margin-top: 0.9rem;
+      align-items: center;
+      gap: 0.4rem;
+      font-size: 12.5px;
+      font-weight: 500;
+      color: rgba(255, 255, 255, 0.55);
+    }
+    .note-card:hover .note-arrow {
+      color: #a599ff;
+    }
+    /* Scroll-lit text */
+    .lit-word {
+      transition: opacity 0.2s ease-out;
+      color: #fafafa;
+    }
+    @keyframes hero-cta-in { 0% { opacity: 0; transform: translateY(6px); } 100% { opacity: 1; transform: translateY(0); } }
+    .hero-cta-delayed {
+      opacity: 0;
+      animation: hero-cta-in 0.6s ease-out 3.3s forwards;
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .hero-cta-delayed { animation: none; opacity: 1; }
+    }
   </style>
 </head>
 <body class="font-sans bg-[#050505] text-[#fafafa]">
@@ -543,6 +651,109 @@
       );
     }
 
+    // Scroll-scrubbed text: words are dim by default and brighten in sequence
+    // as the paragraph passes through a reveal band in the viewport while scrolling.
+    function LitText({ text, className = '', as: Tag = 'p', minOpacity = 0.22, maxOpacity = 1 }) {
+      const ref = useRef(null);
+      const [progress, setProgress] = useState(0);
+      const words = text.split(' ');
+
+      useEffect(() => {
+        const reduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        if (reduced) {
+          setProgress(1);
+          return;
+        }
+        let raf = null;
+        const compute = () => {
+          const el = ref.current;
+          if (!el) return;
+          const rect = el.getBoundingClientRect();
+          const vh = window.innerHeight || 800;
+          const start = vh * 0.9;
+          const end = vh * 0.34;
+          let raw = (start - rect.top) / (start - end);
+          // Trailing sections near the end of the page (e.g. the final CTA) may
+          // never reach the normal reveal threshold since there's no more room
+          // left to scroll — force a full reveal once we hit the page bottom.
+          const doc = document.documentElement;
+          const atBottom = window.innerHeight + window.scrollY >= doc.scrollHeight - 4;
+          if (atBottom) raw = 1;
+          setProgress(Math.min(1, Math.max(0, raw)));
+        };
+        const onScroll = () => {
+          if (raf) return;
+          raf = requestAnimationFrame(() => {
+            compute();
+            raf = null;
+          });
+        };
+        compute();
+        window.addEventListener('scroll', onScroll, { passive: true });
+        window.addEventListener('resize', onScroll);
+        return () => {
+          window.removeEventListener('scroll', onScroll);
+          window.removeEventListener('resize', onScroll);
+          if (raf) cancelAnimationFrame(raf);
+        };
+      }, []);
+
+      return (
+        <Tag ref={ref} className={`lit-text ${className}`}>
+          {words.map((w, i) => {
+            const t = words.length > 1 ? i / (words.length - 1) : 0;
+            const local = Math.min(1, Math.max(0, (progress - t * 0.72) / 0.28));
+            return (
+              <span key={i} className="lit-word" style={{ opacity: minOpacity + local * (maxOpacity - minOpacity) }}>
+                {w}{i < words.length - 1 ? ' ' : ''}
+              </span>
+            );
+          })}
+        </Tag>
+      );
+    }
+
+    // Typewriter: characters type themselves in once the element enters view.
+    function Typewriter({ text, className = '', speed = 16, startDelay = 0, as: Tag = 'span' }) {
+      const ref = useRef(null);
+      const [inView, setInView] = useState(false);
+      const [count, setCount] = useState(0);
+
+      useEffect(() => {
+        const el = ref.current;
+        if (!el) return;
+        if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+          setInView(true);
+          setCount(text.length);
+          return;
+        }
+        const obs = new IntersectionObserver(
+          ([entry]) => {
+            if (entry.isIntersecting) {
+              setInView(true);
+              obs.disconnect();
+            }
+          },
+          { threshold: 0.4 }
+        );
+        obs.observe(el);
+        return () => obs.disconnect();
+      }, [text]);
+
+      useEffect(() => {
+        if (!inView || count >= text.length) return;
+        const delay = count === 0 ? startDelay + speed : speed;
+        const id = setTimeout(() => setCount((c) => c + 1), delay);
+        return () => clearTimeout(id);
+      }, [inView, count, text, speed, startDelay]);
+
+      return (
+        <Tag ref={ref} className={`type-text ${className}`}>
+          {text.slice(0, count)}
+        </Tag>
+      );
+    }
+
     function Nav() {
       return (
         <header className="fixed top-0 left-0 right-0 z-50 nav-blur">
@@ -583,17 +794,27 @@
 
           {/* pt-14 clears fixed nav without shrinking the video layer (video is absolute full) */}
           <div className="relative z-10 flex-1 flex flex-col justify-center max-w-6xl mx-auto w-full px-5 sm:px-8 pt-20 pb-16 md:pt-24 md:pb-20">
-            <p className="text-[12px] font-medium text-white/70 tracking-wide mb-6 drop-shadow-sm">
-              AI companion · chat · voice · memory
-            </p>
-            <h1 className="h-display text-[2.5rem] sm:text-5xl md:text-6xl lg:text-[4.25rem] max-w-3xl text-white drop-shadow-md">
-              Synapses is the frontier of AI companionship.
-            </h1>
-            <p className="mt-6 text-base md:text-lg text-white/85 max-w-xl leading-relaxed font-normal drop-shadow-sm">
-              Ava learns how you work and talk — then stays with you. Not a chatbot tab.
-              A companion for the long run, with tools when you need them.
-            </p>
-            <div className="mt-9 flex flex-wrap items-center gap-3">
+            <Typewriter
+              as="p"
+              className="text-[12px] font-medium text-white/70 tracking-wide mb-6 drop-shadow-sm block"
+              text="AI companion · chat · voice · memory"
+              speed={20}
+            />
+            <Typewriter
+              as="h1"
+              className="h-display text-[2.5rem] sm:text-5xl md:text-6xl lg:text-[4.25rem] max-w-3xl text-white drop-shadow-md block"
+              text="Synapses is the frontier of AI companionship."
+              speed={26}
+              startDelay={650}
+            />
+            <Typewriter
+              as="p"
+              className="mt-6 text-base md:text-lg text-white/85 max-w-xl leading-relaxed font-normal drop-shadow-sm block"
+              text="Ava learns how you work and talk — then stays with you. Not a chatbot tab. A companion for the long run, with tools when you need them."
+              speed={9}
+              startDelay={2100}
+            />
+            <div className="mt-9 flex flex-wrap items-center gap-3 hero-cta-delayed">
               <a href={APP.open} className="btn-primary">
                 Meet Ava <Arrow />
               </a>
@@ -601,7 +822,7 @@
                 Talk to Ava
               </a>
             </div>
-            <p className="mt-5 text-[12px] text-white/30 font-medium">
+            <p className="mt-5 text-[12px] text-white/30 font-medium hero-cta-delayed">
               Free plan · Pro from $12/mo · No credit card
             </p>
           </div>
@@ -645,11 +866,11 @@
             <Reveal>
               <p className="section-num mb-4 text-white/50">2 · What we do</p>
             </Reveal>
-            <Reveal delay={90}>
-              <h2 className="h-display text-3xl sm:text-4xl md:text-5xl max-w-2xl text-white">
-                We’re building AI that feels present — not just productive.
-              </h2>
-            </Reveal>
+            <LitText
+              as="h2"
+              className="h-display text-3xl sm:text-4xl md:text-5xl max-w-2xl"
+              text="We’re building AI that feels present — not just productive."
+            />
             <Reveal delay={180}>
               <p className="mt-5 text-white/50 max-w-xl text-[15px] md:text-base leading-relaxed">
                 Synapses starts with Ava. Everything else in the product supports that relationship.
@@ -765,9 +986,11 @@
             <div className="ava-hero-cluster">
               <Reveal from="left" className="ava-hero-copy" delay={40}>
                 <p className="section-num mb-4">3 · Companion</p>
-                <h2 className="h-display text-3xl sm:text-4xl md:text-[2.75rem] text-white">
-                  Built around Ava
-                </h2>
+                <LitText
+                  as="h2"
+                  className="h-display text-3xl sm:text-4xl md:text-[2.75rem]"
+                  text="Built around Ava"
+                />
                 <p className="mt-5 text-white/45 text-[15px] md:text-base leading-relaxed mx-auto md:mx-0 max-w-sm">
                   Meet your companion — she talks, listens, and remembers.
                   Call her, message her, or just think out loud.
@@ -802,11 +1025,11 @@
             <Reveal>
               <p className="section-num mb-4 text-white/50">4 · Applications</p>
             </Reveal>
-            <Reveal delay={90}>
-              <h2 className="h-display text-3xl sm:text-4xl md:text-5xl max-w-2xl text-white">
-                One companion. Rooms around her.
-              </h2>
-            </Reveal>
+            <LitText
+              as="h2"
+              className="h-display text-3xl sm:text-4xl md:text-5xl max-w-2xl"
+              text="One companion. Rooms around her."
+            />
             <Reveal delay={180}>
               <p className="mt-5 text-white/50 max-w-xl text-[15px] leading-relaxed">
                 Same modules as the Synapses app — companion first, everything else optional.
@@ -871,6 +1094,19 @@
         { numeral: '06', title: 'The interface should disappear when unnecessary.', body: 'The goal isn’t a better collection of screens — it’s an intelligent layer people interact with naturally.' },
       ];
 
+      const capabilities = [
+        { letter: 'A', title: 'Continuous memory', body: 'Ava carries context across sessions, so nothing has to be re-explained from scratch.' },
+        { letter: 'B', title: 'Adaptive tone', body: 'Responses shift with the moment — quick and direct, or slower and more considered.' },
+        { letter: 'C', title: 'Grounded presence', body: 'Timing, pacing, and behavior are tuned so the interaction feels like someone is actually there.' },
+        { letter: 'D', title: 'Tool-aware agency', body: 'Ava reaches for tools, sourcing, and jobs only when the conversation actually calls for them.' },
+      ];
+
+      const notes = [
+        { tag: 'Memory', date: 'Aug 2026', title: 'What continuity actually requires', body: 'Long context windows aren’t the same problem as memory that survives between sessions.' },
+        { tag: 'Interaction', date: 'Jul 2026', title: 'Timing as a signal', body: 'Small delays, interruptions, and pauses carry more meaning than most interfaces admit.' },
+        { tag: 'Agents', date: 'Jun 2026', title: 'When should software just act?', body: 'A working framework for deciding when Ava should ask first versus proceed on her own.' },
+      ];
+
       return (
         <section id="research" className="relative py-24 md:py-32 px-5 sm:px-8 border-t border-white/[0.06] bg-[#050505]">
           <div className="relative z-10 max-w-6xl mx-auto">
@@ -882,14 +1118,13 @@
                 Beyond the app — the research behind it.
               </h2>
             </Reveal>
-            <Reveal delay={160}>
-              <p className="mt-6 text-white/50 max-w-2xl text-[15px] md:text-base leading-relaxed">
-                For decades, software has waited for instructions — open the app, find the menu, issue the command.
-                Synapses Research exists to ask what happens when software can understand more than commands: when it
-                can observe context, coordinate information, adapt its behavior, and appropriately participate in the
-                world people actually live and work in. Synapses the product is our first experiment in that question.
-              </p>
-            </Reveal>
+            <LitText
+              as="p"
+              className="mt-6 max-w-2xl text-[15px] md:text-base leading-relaxed"
+              text="For decades, software has waited for instructions — open the app, find the menu, issue the command. Synapses Research exists to ask what happens when software can understand more than commands: when it can observe context, coordinate information, adapt its behavior, and appropriately participate in the world people actually live and work in. Synapses the product is our first experiment in that question."
+              minOpacity={0.16}
+              maxOpacity={0.55}
+            />
 
             {/* Pull quote */}
             <div className="mt-16 md:mt-20 flex items-center gap-8 md:gap-14">
@@ -944,43 +1179,107 @@
               </div>
             </div>
 
-            {/* Philosophy — compact two-column manifesto, not cards */}
-            <div className="mt-24">
-              <Reveal>
-                <p className="text-[13px] font-medium text-white/40 tracking-wide uppercase mb-2">Research philosophy</p>
-              </Reveal>
-              <div className="mt-4 grid grid-cols-1 md:grid-cols-2 md:gap-x-10">
-                {principles.map((p, i) => (
-                  <Reveal key={p.title} delay={40 + i * 45}>
-                    <div className="principle-row">
-                      <span className="principle-numeral">{p.numeral}</span>
-                      <div>
-                        <h4 className="principle-title text-[14px] md:text-[15px]">{p.title}</h4>
-                        <p className="principle-body text-[13px] mt-1 leading-relaxed">{p.body}</p>
+            {/* Philosophy (2-col, 3 rows each) + closing statement as a third column */}
+            <div className="mt-24 grid grid-cols-1 lg:grid-cols-3 gap-x-14 gap-y-14">
+              <div className="lg:col-span-2">
+                <Reveal>
+                  <p className="text-[13px] font-medium text-white/40 tracking-wide uppercase mb-2">Research philosophy</p>
+                </Reveal>
+                <div className="mt-4 grid grid-cols-1 md:grid-cols-2 md:gap-x-10">
+                  {principles.map((p, i) => (
+                    <Reveal key={p.title} delay={40 + i * 45}>
+                      <div className="principle-row">
+                        <span className="principle-numeral">{p.numeral}</span>
+                        <div>
+                          <h4 className="principle-title text-[14px] md:text-[15px]">{p.title}</h4>
+                          <p className="principle-body text-[13px] mt-1 leading-relaxed">{p.body}</p>
+                        </div>
                       </div>
+                    </Reveal>
+                  ))}
+                </div>
+              </div>
+
+              <div className="lg:mt-9">
+                <LitText
+                  as="p"
+                  className="h-display text-2xl sm:text-3xl md:text-4xl"
+                  text="The next frontier of software may not be software at all. It may be intelligence."
+                />
+                <Reveal delay={120}>
+                  <div className="mt-9 flex flex-wrap items-center gap-3">
+                    <a href="research.html" className="btn-primary">
+                      Read the research paper <Arrow />
+                    </a>
+                    <a href={APP.open} className="btn-ghost">
+                      Explore Synapses
+                    </a>
+                  </div>
+                </Reveal>
+              </div>
+            </div>
+
+            {/* Capabilities — four-up editorial grid */}
+            <div className="mt-24 md:mt-28 pt-14 md:pt-16 border-t border-white/[0.06]">
+              <Reveal>
+                <p className="text-[13px] font-medium text-white/40 tracking-wide uppercase mb-2">Capabilities</p>
+              </Reveal>
+              <Reveal delay={60}>
+                <h3 className="h-display text-2xl sm:text-3xl md:text-[2.25rem] max-w-2xl text-white">
+                  What that research looks like once it's running.
+                </h3>
+              </Reveal>
+
+              <div className="mt-12 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-x-8 gap-y-10">
+                {capabilities.map((c, i) => (
+                  <Reveal key={c.letter} delay={60 + i * 60}>
+                    <div className="capability-col">
+                      <span className="capability-letter">{c.letter}</span>
+                      <p className="capability-title">{c.title}</p>
+                      <p className="capability-body">{c.body}</p>
                     </div>
                   </Reveal>
                 ))}
               </div>
             </div>
 
-            {/* Closing statement */}
-            <Reveal delay={120}>
-              <div className="mt-24 md:mt-28 border-t border-white/[0.06] pt-14 md:pt-16">
-                <p className="h-display text-2xl sm:text-3xl md:text-4xl max-w-2xl text-white">
-                  The next frontier of software may not be software at all.
-                  <br className="hidden sm:block" /> It may be intelligence.
-                </p>
-                <div className="mt-9 flex flex-wrap items-center gap-3">
-                  <a href="research.html" className="btn-primary">
-                    Read the research paper <Arrow />
-                  </a>
-                  <a href={APP.open} className="btn-ghost">
-                    Explore Synapses
-                  </a>
+            {/* Research notes — editorial feed */}
+            <div className="mt-24 md:mt-28 pt-14 md:pt-16 border-t border-white/[0.06]">
+              <div className="flex items-end justify-between gap-6 flex-wrap">
+                <div>
+                  <Reveal>
+                    <p className="text-[13px] font-medium text-white/40 tracking-wide uppercase mb-2">Research notes</p>
+                  </Reveal>
+                  <Reveal delay={60}>
+                    <h3 className="h-display text-2xl sm:text-3xl md:text-[2.25rem] max-w-xl text-white">
+                      Working notes from the lab, as they happen.
+                    </h3>
+                  </Reveal>
                 </div>
+                <Reveal delay={100}>
+                  <a href="research.html" className="btn-ghost !py-2 !px-4 text-[13px] flex-shrink-0">
+                    All research <Arrow />
+                  </a>
+                </Reveal>
               </div>
-            </Reveal>
+
+              <div className="mt-10">
+                {notes.map((note, i) => (
+                  <Reveal key={note.title} delay={80 + i * 70}>
+                    <a href="research.html" className="note-card">
+                      <div className="note-meta">
+                        <span>{note.tag}</span>
+                        <span className="dot" />
+                        <span>{note.date}</span>
+                      </div>
+                      <p className="note-title">{note.title}</p>
+                      <p className="note-body">{note.body}</p>
+                      <span className="note-arrow">Read note <Arrow /></span>
+                    </a>
+                  </Reveal>
+                ))}
+              </div>
+            </div>
           </div>
         </section>
       );
@@ -1001,11 +1300,11 @@
             <Reveal>
               <p className="section-num mb-4 text-white/50">5 · Get started</p>
             </Reveal>
-            <Reveal delay={80}>
-              <h2 className="h-display text-3xl sm:text-4xl md:text-5xl text-white max-w-xl">
-                What do you want to talk about?
-              </h2>
-            </Reveal>
+            <LitText
+              as="h2"
+              className="h-display text-3xl sm:text-4xl md:text-5xl max-w-xl"
+              text="What do you want to talk about?"
+            />
             <Reveal delay={160}>
               <p className="mt-5 text-white/50 text-[15px] md:text-base max-w-md leading-relaxed">
                 Start free. No credit card. Ava is ready when you are.
