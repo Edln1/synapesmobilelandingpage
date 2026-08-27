@@ -346,6 +346,122 @@
         transition: none;
       }
     }
+
+    /* ---- Research section (OpenAI-style editorial) ---- */
+    .research-quote {
+      font-family: 'Geist Sans', Geist, ui-sans-serif, system-ui, sans-serif;
+      font-weight: 400;
+      letter-spacing: -0.02em;
+      line-height: 1.35;
+      color: rgba(255, 255, 255, 0.92);
+    }
+    .research-spectrum {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 0.5rem 0.75rem;
+      font-size: 0.82rem;
+      font-weight: 500;
+      color: rgba(255, 255, 255, 0.45);
+      letter-spacing: 0.01em;
+    }
+    .research-spectrum span.step {
+      color: rgba(255, 255, 255, 0.85);
+    }
+    .research-spectrum span.sep {
+      color: rgba(255, 255, 255, 0.25);
+    }
+    .research-index-row {
+      display: grid;
+      grid-template-columns: 3.25rem 1fr;
+      align-items: baseline;
+      gap: 0.25rem 1.25rem;
+      padding: 1.35rem 0;
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      text-decoration: none;
+      cursor: default;
+      transition: padding-left 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .research-index-row:last-child {
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    }
+    .research-index-row:hover {
+      padding-left: 0.5rem;
+    }
+    @media (min-width: 768px) {
+      .research-index-row {
+        grid-template-columns: 4.5rem 1fr;
+      }
+    }
+    .research-index-num {
+      font-family: 'Geist Sans', Geist, ui-sans-serif, system-ui, sans-serif;
+      font-weight: 500;
+      font-size: 1.4rem;
+      letter-spacing: -0.02em;
+      color: rgba(255, 255, 255, 0.18);
+      transition: color 0.3s ease;
+      font-variant-numeric: tabular-nums;
+    }
+    .research-index-row:hover .research-index-num {
+      color: #7c6af7;
+    }
+    .research-index-body {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: baseline;
+      column-gap: 0.6rem;
+      row-gap: 0.15rem;
+    }
+    .research-index-title {
+      font-size: 1.05rem;
+      font-weight: 500;
+      letter-spacing: -0.01em;
+      color: rgba(255, 255, 255, 0.9);
+      white-space: nowrap;
+      transition: color 0.3s ease;
+    }
+    .research-index-row:hover .research-index-title {
+      color: #ffffff;
+    }
+    .research-index-q {
+      font-size: 13px;
+      color: rgba(255, 255, 255, 0.4);
+      line-height: 1.5;
+    }
+    @media (max-width: 500px) {
+      .research-index-row { grid-template-columns: 2.5rem 1fr; }
+      .research-index-title { white-space: normal; }
+    }
+    .principle-row {
+      display: flex;
+      gap: 0.9rem;
+      padding: 1.25rem 0;
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+    }
+    @media (min-width: 768px) {
+      .principle-row {
+        padding: 1.4rem 0;
+      }
+    }
+    .principle-numeral {
+      font-family: 'Geist Sans', Geist, ui-sans-serif, system-ui, sans-serif;
+      font-weight: 500;
+      font-variant-numeric: tabular-nums;
+      font-size: 0.95rem;
+      letter-spacing: -0.01em;
+      color: rgba(255, 255, 255, 0.25);
+      flex-shrink: 0;
+    }
+    .principle-title {
+      font-weight: 500;
+      letter-spacing: -0.02em;
+      line-height: 1.25;
+      color: #fafafa;
+    }
+    .principle-body {
+      color: rgba(255, 255, 255, 0.45);
+      line-height: 1.6;
+    }
   </style>
 </head>
 <body class="font-sans bg-[#050505] text-[#fafafa]">
@@ -370,6 +486,7 @@
     const SLIDE2_VIDEO = 'videos/slide2.mp4';
     const ROOMS_BG = 'videos/rooms.jpg';
     const READY_BG = 'videos/readytotalk.jpg';
+    const TERMINAL_ICON = 'videos/terminal-icon.png';
 
     const Arrow = () => (
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
@@ -458,6 +575,7 @@
               Synapses
             </a>
             <nav className="hidden md:flex items-center gap-8 text-[13px] text-white/55 font-medium">
+              <a href="#research" className="hover:text-white transition-colors">Research</a>
               <a href="#product" className="hover:text-white transition-colors">Product</a>
               <a href="#companion" className="hover:text-white transition-colors">Companion</a>
               <a href="#apps" className="hover:text-white transition-colors">Applications</a>
@@ -552,10 +670,10 @@
 
           <div className="relative z-10 max-w-6xl mx-auto">
             <Reveal>
-              <p className="section-num mb-4 text-white/50">1 · What we do</p>
+              <p className="section-num mb-4 text-white/50">2 · What we do</p>
             </Reveal>
             <Reveal delay={90}>
-              <h2 className="h-display text-3xl sm:text-4xl md:text-5xl max-w-2xl text-white drop-shadow-md">
+              <h2 className="h-display font-normal text-3xl sm:text-4xl md:text-5xl max-w-2xl text-white drop-shadow-md">
                 We’re building AI that feels present — not just productive.
               </h2>
             </Reveal>
@@ -671,7 +789,7 @@
           <div className="relative z-10 max-w-6xl mx-auto">
             <div className="ava-hero-cluster">
               <Reveal from="left" className="ava-hero-copy" delay={40}>
-                <p className="section-num mb-4">2 · Companion</p>
+                <p className="section-num mb-4">3 · Companion</p>
                 <h2 className="h-display text-3xl sm:text-4xl md:text-[2.75rem] text-white">
                   Built around Ava
                 </h2>
@@ -716,10 +834,10 @@
 
           <div className="relative z-10 max-w-6xl mx-auto">
             <Reveal>
-              <p className="section-num mb-4 text-white/50">3 · Applications</p>
+              <p className="section-num mb-4 text-white/50">4 · Applications</p>
             </Reveal>
             <Reveal delay={90}>
-              <h2 className="h-display text-3xl sm:text-4xl md:text-5xl max-w-2xl text-white drop-shadow-md">
+              <h2 className="h-display font-normal text-3xl sm:text-4xl md:text-5xl max-w-2xl text-white drop-shadow-md">
                 One companion. Rooms around her.
               </h2>
             </Reveal>
@@ -747,6 +865,144 @@
       );
     }
 
+    function Research() {
+      const areas = [
+        { n: '14.1', title: 'Artificial presence', q: 'How can AI maintain continuity and presence across time?' },
+        { n: '14.2', title: 'Contextual intelligence', q: 'How can AI build useful representations of the user’s current situation?' },
+        { n: '14.3', title: 'Adaptive interaction', q: 'How should AI change its communication and behavior according to context?' },
+        { n: '14.4', title: 'Agentic software', q: 'How can AI safely interact with software capabilities on behalf of people?' },
+        { n: '14.5', title: 'Multimodal intelligence', q: 'How can language, vision, audio, and spatial signals be combined?' },
+        { n: '14.6', title: 'Dynamic interfaces', q: 'How can interfaces adapt themselves to goals rather than fixed workflows?' },
+        { n: '14.7', title: 'Artificial expression', q: 'How can timing, tone, and behavior create a stronger sense of presence?' },
+        { n: '14.8', title: 'Human–AI collaboration', q: 'How should responsibility and control be divided between humans and systems?' },
+        { n: '14.9', title: 'AI-native computing', q: 'What does software look like when AI is a fundamental layer, not an add-on?' },
+        { n: '14.10', title: 'New forms of intelligence', q: 'What becomes possible when AI isn’t constrained to behave like a human?' },
+      ];
+
+      const principles = [
+        { numeral: '01', title: 'Intelligence should augment, not merely automate.', body: 'The objective isn’t to remove humans from systems unnecessarily — it’s to increase what people can understand, create, and accomplish.' },
+        { numeral: '02', title: 'Context is intelligence.', body: 'A system that knows more facts but understands less context may still feel unintelligent.' },
+        { numeral: '03', title: 'Interaction is part of intelligence.', body: 'How a system behaves can matter as much as what it knows.' },
+        { numeral: '04', title: 'Autonomy must be earned.', body: 'Greater capability should come with appropriate transparency, control, and safety.' },
+        { numeral: '05', title: 'Human imitation isn’t the destination.', body: 'AI may develop interaction paradigms fundamentally different from human communication.' },
+        { numeral: '06', title: 'The interface should disappear when unnecessary.', body: 'The goal isn’t a better collection of screens — it’s an intelligent layer people interact with naturally.' },
+      ];
+
+      return (
+        <section id="research" className="relative py-24 md:py-32 px-5 sm:px-8 border-t border-white/[0.06] bg-[#050505]">
+          <div className="relative z-10 max-w-6xl mx-auto">
+            <Reveal>
+              <p className="section-num mb-4">1 · Research</p>
+            </Reveal>
+            <Reveal delay={80}>
+              <h2 className="h-display text-3xl sm:text-4xl md:text-5xl max-w-3xl text-white">
+                Beyond the app — the research behind it.
+              </h2>
+            </Reveal>
+            <Reveal delay={160}>
+              <p className="mt-6 text-white/50 max-w-2xl text-[15px] md:text-base leading-relaxed">
+                For decades, software has waited for instructions — open the app, find the menu, issue the command.
+                Synapses Research exists to ask what happens when software can understand more than commands: when it
+                can observe context, coordinate information, adapt its behavior, and appropriately participate in the
+                world people actually live and work in. Synapses the product is our first experiment in that question.
+              </p>
+            </Reveal>
+
+            {/* Pull quote */}
+            <div className="mt-16 md:mt-20 flex items-center gap-8 md:gap-14">
+              <Reveal className="flex-1">
+                <p className="research-quote text-2xl sm:text-3xl md:text-[2.5rem] max-w-3xl">
+                  “What should software become when it can understand more than commands?”
+                </p>
+              </Reveal>
+              <Reveal delay={140} className="hidden sm:block flex-shrink-0" from="right">
+                <img
+                  src={TERMINAL_ICON}
+                  alt=""
+                  className="w-24 md:w-32 lg:w-36 h-auto opacity-90"
+                />
+              </Reveal>
+            </div>
+
+            {/* Spectrum */}
+            <Reveal delay={280}>
+              <div className="research-spectrum mt-10">
+                <span className="step">Tool</span>
+                <span className="sep">→</span>
+                <span className="step">Assistant</span>
+                <span className="sep">→</span>
+                <span className="step">Agent</span>
+                <span className="sep">→</span>
+                <span className="step">Intelligent environment</span>
+              </div>
+              <p className="mt-3 text-white/35 text-[13px] max-w-md">
+                The goal isn’t maximum autonomy — it’s appropriate intelligence. A system should know when to act,
+                when to ask, and when to stay quiet.
+              </p>
+            </Reveal>
+
+            {/* Research areas — editorial index, not boxes */}
+            <div className="mt-20">
+              <Reveal>
+                <p className="text-[13px] font-medium text-white/40 tracking-wide uppercase mb-2">Research areas</p>
+              </Reveal>
+              <div className="mt-4">
+                {areas.map((a, i) => (
+                  <Reveal key={a.n} delay={40 + i * 45}>
+                    <div className="research-index-row">
+                      <span className="research-index-num">{String(i + 1).padStart(2, '0')}</span>
+                      <span className="research-index-body">
+                        <span className="research-index-title">{a.title}</span>
+                        <span className="research-index-q">— {a.q}</span>
+                      </span>
+                    </div>
+                  </Reveal>
+                ))}
+              </div>
+            </div>
+
+            {/* Philosophy — compact two-column manifesto, not cards */}
+            <div className="mt-24">
+              <Reveal>
+                <p className="text-[13px] font-medium text-white/40 tracking-wide uppercase mb-2">Research philosophy</p>
+              </Reveal>
+              <div className="mt-4 grid grid-cols-1 md:grid-cols-2 md:gap-x-10">
+                {principles.map((p, i) => (
+                  <Reveal key={p.title} delay={40 + i * 45}>
+                    <div className="principle-row">
+                      <span className="principle-numeral">{p.numeral}</span>
+                      <div>
+                        <h4 className="principle-title text-[14px] md:text-[15px]">{p.title}</h4>
+                        <p className="principle-body text-[13px] mt-1 leading-relaxed">{p.body}</p>
+                      </div>
+                    </div>
+                  </Reveal>
+                ))}
+              </div>
+            </div>
+
+            {/* Closing statement */}
+            <Reveal delay={120}>
+              <div className="mt-24 md:mt-28 border-t border-white/[0.06] pt-14 md:pt-16">
+                <p className="h-display text-2xl sm:text-3xl md:text-4xl max-w-2xl text-white">
+                  The next frontier of software may not be software at all.
+                  <br className="hidden sm:block" /> It may be intelligence.
+                </p>
+                <div className="mt-9 flex flex-wrap items-center gap-3">
+                  <a href="research.html" className="btn-primary">
+                    Read the research paper <Arrow />
+                  </a>
+                  <a href={APP.open} className="btn-ghost">
+                    Explore Synapses
+                  </a>
+                </div>
+              </div>
+            </Reveal>
+          </div>
+        </section>
+      );
+    }
+
     function Cta() {
       return (
         <section className="relative min-h-[70vh] py-24 md:py-32 px-5 sm:px-8 overflow-hidden border-t border-white/[0.06]">
@@ -760,7 +1016,7 @@
           </div>
           <div className="relative z-10 max-w-3xl mx-auto text-center">
             <Reveal>
-              <h2 className="h-display text-3xl sm:text-4xl md:text-5xl text-white drop-shadow-md">
+              <h2 className="h-display font-normal text-3xl sm:text-4xl md:text-5xl text-white drop-shadow-md">
                 What do you want to talk about?
               </h2>
             </Reveal>
@@ -790,6 +1046,7 @@
           <div className="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4 text-[13px]">
             <span className="font-medium text-white/80">Synapses</span>
             <div className="flex gap-6 text-white/35">
+              <a href="#research" className="hover:text-white/70 transition-colors">Research</a>
               <a href="#product" className="hover:text-white/70 transition-colors">Product</a>
               <a href="#companion" className="hover:text-white/70 transition-colors">Companion</a>
               <a href={APP.open} className="hover:text-white/70 transition-colors">Open app</a>
@@ -804,6 +1061,7 @@
       return (
         <main>
           <Nav />
+          <Research />
           <Hero />
           <div className="divider max-w-6xl mx-auto" />
           <Product />
