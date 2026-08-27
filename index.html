@@ -544,32 +544,8 @@
     }
 
     function Nav() {
-      // Lighten glass only while header sits over slide-2 (#product) video
-      const [onSlide2, setOnSlide2] = useState(false);
-
-      useEffect(() => {
-        const section = document.getElementById('product');
-        if (!section) return;
-
-        const update = () => {
-          const r = section.getBoundingClientRect();
-          // Header band is ~0–56px; treat as “on slide 2” when product covers that band
-          const headerBottom = 56;
-          const coversHeader = r.top < headerBottom && r.bottom > headerBottom;
-          setOnSlide2(coversHeader);
-        };
-
-        update();
-        window.addEventListener('scroll', update, { passive: true });
-        window.addEventListener('resize', update);
-        return () => {
-          window.removeEventListener('scroll', update);
-          window.removeEventListener('resize', update);
-        };
-      }, []);
-
       return (
-        <header className={`fixed top-0 left-0 right-0 z-50 nav-blur${onSlide2 ? ' nav-on-slide2' : ''}`}>
+        <header className="fixed top-0 left-0 right-0 z-50 nav-blur">
           <div className="max-w-6xl mx-auto px-5 sm:px-8 h-14 flex items-center justify-between">
             <a href="#top" className="text-[15px] font-medium tracking-tight text-white">
               Synapses
@@ -653,43 +629,31 @@
       ];
 
       return (
-        <section id="product" className="relative min-h-screen py-24 md:py-32 px-5 sm:px-8 overflow-hidden">
-          {/* Slide 2 full-bleed background */}
-          <div className="absolute inset-0 z-0 pointer-events-none">
-            <video
-              src={SLIDE2_VIDEO}
-              autoPlay
-              muted
-              loop
-              playsInline
-              className="absolute inset-0 w-full h-full object-cover"
-            />
-            {/* Light scrim only — keep wallpaper visible */}
-            <div className="absolute inset-0 bg-black/35" />
-          </div>
-
+        <section id="product" className="relative py-24 md:py-32 px-5 sm:px-8 border-t border-white/[0.06] bg-[#050505]">
           <div className="relative z-10 max-w-6xl mx-auto">
             <Reveal>
               <p className="section-num mb-4 text-white/50">2 · What we do</p>
             </Reveal>
             <Reveal delay={90}>
-              <h2 className="h-display font-normal text-3xl sm:text-4xl md:text-5xl max-w-2xl text-white drop-shadow-md">
+              <h2 className="h-display text-3xl sm:text-4xl md:text-5xl max-w-2xl text-white">
                 We’re building AI that feels present — not just productive.
               </h2>
             </Reveal>
             <Reveal delay={180}>
-              <p className="mt-5 text-white/75 max-w-xl text-[15px] md:text-base leading-relaxed drop-shadow-sm">
+              <p className="mt-5 text-white/50 max-w-xl text-[15px] md:text-base leading-relaxed">
                 Synapses starts with Ava. Everything else in the product supports that relationship.
               </p>
             </Reveal>
 
-            <div className="mt-14 grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-5">
+            <div className="mt-16 max-w-2xl">
               {steps.map((s, i) => (
-                <Reveal key={s.n} delay={120 + i * 140}>
-                  <div className="card-invert p-6 md:p-7 h-full">
-                    <p className="section-num mb-5 text-white/50">{s.n}</p>
-                    <h3 className="text-xl font-medium tracking-tight text-white mb-3">{s.title}</h3>
-                    <p className="text-[14px] text-white/70 leading-relaxed">{s.body}</p>
+                <Reveal key={s.n} delay={100 + i * 80}>
+                  <div className="research-index-row">
+                    <span className="research-index-num">{s.n}</span>
+                    <span className="research-index-body">
+                      <span className="research-index-title">{s.title}</span>
+                      <span className="research-index-q">— {s.body}</span>
+                    </span>
                   </div>
                 </Reveal>
               ))}
@@ -773,9 +737,9 @@
               </button>
             </div>
           </div>
-          <p className="mt-3 text-center text-[13px] font-medium text-white/80">Ava</p>
-          <p className="text-center text-[12px] text-white/35">AI companion</p>
-          <p className="ava-mute-hint">{muted ? 'Tap speaker to hear her' : 'Sound on'}</p>
+          <p className="mt-3 text-center text-[12px] text-white/35 leading-relaxed">
+            Fig. 1 — Ava, live voice. {muted ? 'Tap to unmute.' : 'Sound on.'}
+          </p>
         </div>
       );
     }
@@ -822,43 +786,51 @@
       ];
 
       return (
-        <section id="apps" className="relative min-h-screen py-24 md:py-32 px-5 sm:px-8 overflow-hidden border-t border-white/[0.06]">
-          <div className="absolute inset-0 z-0 pointer-events-none">
-            <img
-              src={ROOMS_BG}
-              alt=""
-              className="absolute inset-0 w-full h-full object-cover object-center"
-            />
-            <div className="absolute inset-0 bg-black/45" />
-          </div>
-
+        <section id="apps" className="relative py-24 md:py-32 px-5 sm:px-8 border-t border-white/[0.06] bg-[#050505]">
           <div className="relative z-10 max-w-6xl mx-auto">
             <Reveal>
               <p className="section-num mb-4 text-white/50">4 · Applications</p>
             </Reveal>
             <Reveal delay={90}>
-              <h2 className="h-display font-normal text-3xl sm:text-4xl md:text-5xl max-w-2xl text-white drop-shadow-md">
+              <h2 className="h-display text-3xl sm:text-4xl md:text-5xl max-w-2xl text-white">
                 One companion. Rooms around her.
               </h2>
             </Reveal>
             <Reveal delay={180}>
-              <p className="mt-5 text-white/75 max-w-xl text-[15px] leading-relaxed drop-shadow-sm">
+              <p className="mt-5 text-white/50 max-w-xl text-[15px] leading-relaxed">
                 Same modules as the Synapses app — companion first, everything else optional.
               </p>
             </Reveal>
 
-            <div className="mt-14 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-4">
-              {apps.map((a, i) => (
-                <Reveal key={a.title} delay={100 + i * 90}>
-                  <a href={APP.open} className="card-invert p-5 md:p-6 block group h-full">
-                    <div className="flex items-start justify-between gap-3 mb-3">
-                      <h3 className="text-[15px] font-medium tracking-tight text-white">{a.title}</h3>
-                      <span className="text-white/40 group-hover:text-white/70 transition-colors"><Arrow /></span>
-                    </div>
-                    <p className="text-[13px] text-white/65 leading-relaxed">{a.body}</p>
-                  </a>
-                </Reveal>
-              ))}
+            <div className="mt-16 grid grid-cols-1 lg:grid-cols-[1fr_19rem] gap-10 lg:gap-16 items-start">
+              <div>
+                {apps.map((a, i) => (
+                  <Reveal key={a.title} delay={60 + i * 55}>
+                    <a href={APP.open} className="research-index-row block no-underline group" style={{ cursor: 'pointer' }}>
+                      <span className="research-index-num">{String(i + 1).padStart(2, '0')}</span>
+                      <span className="research-index-body">
+                        <span className="research-index-title">{a.title}</span>
+                        <span className="research-index-q">— {a.body}</span>
+                      </span>
+                    </a>
+                  </Reveal>
+                ))}
+              </div>
+
+              <Reveal delay={220} from="right" className="hidden lg:block">
+                <figure>
+                  <div className="rounded-xl overflow-hidden border border-white/[0.08]">
+                    <img
+                      src={ROOMS_BG}
+                      alt=""
+                      className="w-full h-auto block"
+                    />
+                  </div>
+                  <figcaption className="mt-3 text-[12px] text-white/30 leading-relaxed">
+                    Fig. 2 — rooms around the companion.
+                  </figcaption>
+                </figure>
+              </Reveal>
             </div>
           </div>
         </section>
@@ -1005,28 +977,23 @@
 
     function Cta() {
       return (
-        <section className="relative min-h-[70vh] py-24 md:py-32 px-5 sm:px-8 overflow-hidden border-t border-white/[0.06]">
-          <div className="absolute inset-0 z-0 pointer-events-none">
-            <img
-              src={READY_BG}
-              alt=""
-              className="absolute inset-0 w-full h-full object-cover object-center"
-            />
-            <div className="absolute inset-0 bg-black/45" />
-          </div>
-          <div className="relative z-10 max-w-3xl mx-auto text-center">
+        <section className="relative py-24 md:py-32 px-5 sm:px-8 border-t border-white/[0.06] bg-[#050505]">
+          <div className="relative z-10 max-w-3xl mx-auto">
             <Reveal>
-              <h2 className="h-display font-normal text-3xl sm:text-4xl md:text-5xl text-white drop-shadow-md">
+              <p className="section-num mb-4 text-white/50">5 · Get started</p>
+            </Reveal>
+            <Reveal delay={80}>
+              <h2 className="h-display text-3xl sm:text-4xl md:text-5xl text-white max-w-xl">
                 What do you want to talk about?
               </h2>
             </Reveal>
-            <Reveal delay={120}>
-              <p className="mt-5 text-white/80 text-[15px] md:text-base drop-shadow-sm">
+            <Reveal delay={160}>
+              <p className="mt-5 text-white/50 text-[15px] md:text-base max-w-md leading-relaxed">
                 Start free. No credit card. Ava is ready when you are.
               </p>
             </Reveal>
-            <Reveal delay={220}>
-              <div className="mt-9 flex flex-wrap items-center justify-center gap-3">
+            <Reveal delay={240}>
+              <div className="mt-9 flex flex-wrap items-center gap-3">
                 <a href={APP.open} className="btn-primary">
                   Open Synapses <Arrow />
                 </a>
