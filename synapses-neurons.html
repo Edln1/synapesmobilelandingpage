@@ -528,7 +528,10 @@
     visibility:hidden;
   }
   .node-dot{ width:calc(6 * var(--u)); height:calc(6 * var(--u)); border-radius:999px; flex-shrink:0; }
-  @media (max-width:900px){ .node-graph-wrap{ display:none; } }
+  @media (max-width:900px){
+    .node-graph-wrap{ display:block; }
+    .node-label{ font-size:max(10px, calc(12 * var(--u))); padding:calc(3 * var(--u)) calc(8 * var(--u)) calc(3 * var(--u)) calc(6 * var(--u)); }
+  }
 
   /* ── scroll cue (z 4) ────────────────────────────────────────────────── */
   .scroll{
@@ -708,24 +711,31 @@
     .dock-item .glyph{ width:max(19px, calc(20 * var(--u))); height:max(19px, calc(20 * var(--u))); }
     .dock-mark svg{ width:52%; height:52%; }
     .knob-float{ left:calc(644 * var(--u)); top:calc(1218 * var(--u)); transform-origin:calc(-264 * var(--u)) calc(-43 * var(--u)); }
-    .headline{ left:calc(34 * var(--u)); top:calc(128 * var(--u)); font-size:calc(62 * var(--u)); line-height:calc(66 * var(--u)); }
-    .lede{ left:calc(34 * var(--u)); top:calc(288 * var(--u)); width:calc(400 * var(--u)); font-size:calc(19 * var(--u)); line-height:calc(27 * var(--u)); }
+    .headline{ left:calc(28 * var(--u)); top:calc(18 * var(--u)); font-size:calc(52 * var(--u)); line-height:calc(56 * var(--u)); }
+    .lede{ left:calc(28 * var(--u)); top:calc(148 * var(--u)); width:calc(520 * var(--u)); font-size:calc(18 * var(--u)); line-height:calc(26 * var(--u)); }
     /* one column: the frame keeps its aspect, re-anchored to the left rail */
     .pill-clip{
-      left:calc(34 * var(--u)); top:calc(430 * var(--u));
-      width:calc(506 * var(--u)); height:calc(334 * var(--u));
-      margin:calc(-167 * var(--u)) 0 0 calc(-79 * var(--u));
-      clip-path:inset(calc(93 * var(--u)) calc(74 * var(--u)) calc(1 * var(--u)) calc(74 * var(--u)) round calc(76 * var(--u)));
+      left:calc(28 * var(--u)); top:calc(292 * var(--u));
+      width:calc(470 * var(--u)); height:calc(300 * var(--u));
+      margin:calc(-150 * var(--u)) 0 0 calc(-70 * var(--u));
+      clip-path:inset(calc(84 * var(--u)) calc(66 * var(--u)) calc(1 * var(--u)) calc(66 * var(--u)) round calc(70 * var(--u)));
     }
     .liquid-stage--explore{ --h:calc(74.4152 * var(--u)); }
-    .play-wrap{ display:none; }
+    .play-wrap{
+      display:block;
+      left:calc(500 * var(--u));
+      top:calc(268 * var(--u));
+      width:max(72px, calc(96 * var(--u)));
+      height:max(72px, calc(96 * var(--u)));
+    }
+    .liquid-stage--play{ --h:max(72px, calc(88.2288 * var(--u))); }
 
     .stat{ gap:calc(11 * var(--u)); }
     .stat .mark{ width:calc(36 * var(--u)); height:calc(36 * var(--u)); }
     .stat dt{ font-size:calc(16 * var(--u)); line-height:calc(22 * var(--u)); }
     .stat dd{ font-size:calc(16.5 * var(--u)); line-height:calc(24 * var(--u)); }
-    .stat--a{ left:calc(34 * var(--u));  top:calc(540 * var(--u)); }
-    .stat--b{ left:calc(396 * var(--u)); top:calc(540 * var(--u)); }
+    .stat--a{ left:calc(28 * var(--u));  top:calc(430 * var(--u)); }
+    .stat--b{ left:calc(400 * var(--u)); top:calc(430 * var(--u)); }
 
     .card{ border-radius:calc(40 * var(--u)); }
     .card--about{ left:calc(34 * var(--u)); top:calc(1050 * var(--u)); width:calc(692 * var(--u)); height:calc(250 * var(--u)); }
@@ -733,6 +743,7 @@
     .card--about h2{ top:calc(124 * var(--u)); width:calc(400 * var(--u)); font-size:calc(32 * var(--u)); line-height:calc(36 * var(--u)); }
     .card--stove{ left:calc(34 * var(--u)); top:calc(1324 * var(--u)); width:calc(692 * var(--u)); height:calc(268 * var(--u)); }
     .card--stove h2{ font-size:calc(32 * var(--u)); }
+    .ghost{ font-size:calc(184 * var(--u)); letter-spacing:calc(14 * var(--u)); bottom:calc(660 * var(--u)); left:calc(-10 * var(--u)); }
     /* one column: both plates become a thumbnail on the card's outer edge,
        the Ethos one still anchored to the top */
     .card--stove figure{ left:auto; right:calc(16 * var(--u)); bottom:calc(16 * var(--u)); width:calc(300 * var(--u)); height:calc(150 * var(--u)); }
@@ -741,7 +752,6 @@
     .card--stove .knob{ right:calc(30 * var(--u)); bottom:calc(30 * var(--u)); }
 
     .scroll{ left:calc(702 * var(--u)); top:calc(470 * var(--u)); }
-    .ghost{ font-size:calc(184 * var(--u)); letter-spacing:calc(14 * var(--u)); bottom:calc(660 * var(--u)); left:calc(-10 * var(--u)); }
   }
 </style>
 <style>
@@ -1890,6 +1900,7 @@ window.__seek   = v => { clock = v; drawn = null; };
   /* reference-frame box (1600×880 system) this graph fills — the gap
      between the play button and the two floating cards */
   var NODE = { left: 120, top: 500, w: 760, h: 300 };
+  var NODE_N = { left: 24, top: 520, w: 712, h: 300 };
   var THREADS = [
     { title: 'Continuous memory',   color: '#7c6af7', x:  35, y:  108 },
     { title: 'Voice latency',       color: '#00d9a8', x: 263, y:   94 },
@@ -3972,7 +3983,7 @@ window.__seek   = v => { clock = v; drawn = null; };
     loadAvaRig();
 
     buildAmbient();
-    if (!narrow) buildNodeGraph();
+    buildNodeGraph();
     layout();
     window.addEventListener('resize', layout);
     if (typeof ResizeObserver !== 'undefined' && hero) {
@@ -4952,8 +4963,9 @@ window.__seek   = v => { clock = v; drawn = null; };
     crownPlane.constant = 80;
 
     if (nodeGraphGroup) {
-      nodeGraphGroup.position.set(wx(NODE.left + NODE.w / 2), wy(NODE.top + NODE.h / 2), 0);
-      nodeGraphGroup.scale.setScalar(u * cover);
+      var N = narrow ? NODE_N : NODE;
+      nodeGraphGroup.position.set(wx(N.left + N.w / 2), wy(N.top + N.h / 2), 0);
+      nodeGraphGroup.scale.setScalar(u * cover * (narrow ? 0.78 : 1));
     }
 
     var aw = A.w * u * cover, ah = aw / A.aspect;
