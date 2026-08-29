@@ -722,11 +722,12 @@
     }
     .liquid-stage--explore{ --h:calc(74.4152 * var(--u)); }
     .play-wrap{
-      display:block;
-      left:calc(548 * var(--u));
-      top:calc(418 * var(--u));
-      width:max(72px, calc(96 * var(--u)));
-      height:max(72px, calc(96 * var(--u)));
+      display:block !important;
+      left:calc(520 * var(--u));
+      top:calc(400 * var(--u));
+      width:calc(170 * var(--u));
+      height:calc(170 * var(--u));
+      overflow:visible;
     }
     .liquid-stage--play{ --h:max(72px, calc(88.2288 * var(--u))); }
 
@@ -1913,7 +1914,7 @@ window.__seek   = v => { clock = v; drawn = null; };
   /* reference-frame box (1600×880 system) this graph fills — the gap
      between the play button and the two floating cards */
   var NODE = { left: 120, top: 500, w: 760, h: 300 };
-  var NODE_N = { left: 56, top: 620, w: 648, h: 340 };
+  var NODE_N = { left: 28, top: 610, w: 704, h: 360 };
   var THREADS = [
     { title: 'Continuous memory',   color: '#7c6af7', x:  35, y:  108 },
     { title: 'Voice latency',       color: '#00d9a8', x: 263, y:   94 },
@@ -4123,6 +4124,10 @@ window.__seek   = v => { clock = v; drawn = null; };
     nodeGraphGroup = new THREE.Group();
 
     var positions = THREADS.map(function (t) { return new THREE.Vector3(t.x, t.y, 0); });
+    if (NARROW.matches) {
+      positions[3].x += 22; positions[3].y += 40;
+      positions[4].x -= 12; positions[4].y -= 46;
+    }
     var colors = THREADS.map(function (t) { return new THREE.Color(t.color); });
 
     nodeHalos = [];
@@ -4984,7 +4989,7 @@ window.__seek   = v => { clock = v; drawn = null; };
     if (nodeGraphGroup) {
       var N = narrow ? NODE_N : NODE;
       nodeGraphGroup.position.set(wx(N.left + N.w / 2), wy(N.top + N.h / 2), 0);
-      nodeGraphGroup.scale.setScalar(u * cover * (narrow ? 0.92 : 1));
+      nodeGraphGroup.scale.setScalar(u * cover * (narrow ? 1.0 : 1));
     }
 
     var aw = A.w * u * cover, ah = aw / A.aspect;
