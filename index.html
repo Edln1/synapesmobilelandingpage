@@ -953,12 +953,14 @@
       return (
         <header className="fixed top-0 left-0 right-0 z-50 nav-blur">
           <div className="research-navigation max-w-6xl mx-auto px-5 sm:px-8">
-            <a href="https://research.synapses.cloud/" className="research-brand text-[15px] font-medium tracking-tight text-white">Synapses</a>
+            <div className="research-brand flex items-baseline gap-2.5 whitespace-nowrap">
+              <a href="https://research.synapses.cloud/" className="text-[15px] font-medium tracking-tight text-white">Synapses</a>
+              <a href="https://edln1.github.io/Nexora/" className="text-[11px] text-white/40 hover:text-white/80 transition-colors">by Nexora</a>
+            </div>
             <nav aria-label="Main navigation" className="research-links text-[13px] text-white/55 font-medium">
               <a href="?view=research#research" aria-current={new URLSearchParams(window.location.search).get('view') === 'companion' ? undefined : 'page'}>Research</a>
               <a href="?view=companion">Companion</a>
               <a href="https://ava-by-nexora.edln.chatgpt.site/pin/">Wearable</a>
-              <a href="https://edln1.github.io/Nexora/">Nexora store</a>
             </nav>
             <a href={APP.open} className="research-open btn-primary text-[13px] !py-2 !px-4">Open app <Arrow /></a>
           </div>
