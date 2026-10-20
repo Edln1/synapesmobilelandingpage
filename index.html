@@ -961,6 +961,7 @@
               <a href="?view=research#research" aria-current={new URLSearchParams(window.location.search).get('view') === 'companion' ? undefined : 'page'}>Research</a>
               <a href="?view=companion">Companion</a>
               <a href="https://nexora.synapses.cloud/ava/pin/">Wearable</a>
+              <a href="https://services.synapses.cloud/">Services</a>
             </nav>
             <a href={APP.open} className="research-open btn-primary text-[13px] !py-2 !px-4">Open app <Arrow /></a>
           </div>
@@ -1668,10 +1669,11 @@
         <footer className="border-t border-white/[0.06] py-10 px-5 sm:px-8">
           <div className="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4 text-[13px]">
             <span className="font-medium text-white/80">Synapses</span>
-            <div className="flex gap-6 text-white/35">
+            <div className="flex flex-wrap justify-center gap-x-6 gap-y-3 text-white/35">
               <a href="?view=research#research" className="hover:text-white/70 transition-colors">Research</a>
               <a href="?view=companion#product" className="hover:text-white/70 transition-colors">Product</a>
               <a href="?view=companion" className="hover:text-white/70 transition-colors">Companion</a>
+              <a href="https://services.synapses.cloud/" className="hover:text-white/70 transition-colors">Services</a>
               <a href={APP.open} target="_blank" rel="noopener noreferrer" className="hover:text-white/70 transition-colors">Open app</a>
             </div>
             <span className="text-white/25 text-[12px]">© {new Date().getFullYear()} · Synapses</span>
