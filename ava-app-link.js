@@ -1,7 +1,7 @@
 (function () {
   'use strict';
   var normalUrl = 'https://synapses.cloud/';
-  var avaUrl = 'https://synapses.cloud/index.html?ava-app=1&source=research&v=20261118-ava3';
+  var avaUrl = 'https://synapses.cloud/index.html?ava-app=1&source=research&v=20261118-ava4';
   function mobile() {
     return typeof window.matchMedia === 'function' && window.matchMedia('(max-width: 820px), (max-width: 1100px) and (pointer: coarse)').matches;
   }
@@ -9,7 +9,7 @@
   window.synapsesAppEntry = Object.freeze({
     mobile: mobile(),
     android: typeof navigator !== 'undefined' && /Android/i.test(navigator.userAgent || ''),
-    apk: 'https://research.synapses.cloud/downloads/ava-preview.apk?v=0.1.1',
+    apk: 'https://research.synapses.cloud/downloads/ava-preview.apk?v=0.1.2',
     href: destination(),
     label: mobile() ? 'Open Ava' : 'Open app',
     destination: destination
