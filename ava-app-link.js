@@ -9,7 +9,7 @@
   window.synapsesAppEntry = Object.freeze({
     mobile: mobile(),
     android: typeof navigator !== 'undefined' && /Android/i.test(navigator.userAgent || ''),
-    apk: 'https://research.synapses.cloud/downloads/ava-preview.apk',
+    apk: 'https://research.synapses.cloud/downloads/ava-preview.apk?v=0.1.1',
     href: destination(),
     label: mobile() ? 'Open Ava' : 'Open app',
     destination: destination
