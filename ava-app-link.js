@@ -1,7 +1,7 @@
 (function () {
   'use strict';
   var normalUrl = 'https://synapses.cloud/';
-  var avaUrl = 'https://synapses.cloud/index.html?ava-app=1&source=research';
+  var avaUrl = 'https://synapses.cloud/index.html?ava-app=1&source=research&v=20261118-ava3';
   function mobile() {
     return typeof window.matchMedia === 'function' && window.matchMedia('(max-width: 820px), (max-width: 1100px) and (pointer: coarse)').matches;
   }
