@@ -1,15 +1,24 @@
 (function () {
   'use strict';
   var normalUrl = 'https://synapses.cloud/';
-  var avaUrl = 'https://synapses.cloud/index.html?ava-app=1&source=research&v=20261118-ava4';
+  var avaUrl = 'https://synapses.cloud/index.html?ava-app=1&source=research&v=20261119-ava-home1';
   function mobile() {
-    return typeof window.matchMedia === 'function' && window.matchMedia('(max-width: 820px), (max-width: 1100px) and (pointer: coarse)').matches;
+    return typeof navigator !== 'undefined' && /Android|iPhone|iPad|iPod/i.test(navigator.userAgent || '') || typeof window.matchMedia === 'function' && window.matchMedia('(max-width: 820px), (max-width: 1100px) and (pointer: coarse)').matches;
   }
   function destination() { return mobile() ? avaUrl : normalUrl; }
+  var agent = typeof navigator !== 'undefined' ? navigator.userAgent || '' : '';
+  var android = /Android/i.test(agent), windows = /Windows NT/i.test(agent);
+  var apkUrl = 'https://research.synapses.cloud/downloads/ava-preview.apk?v=0.1.3';
+  var windowsUrl = 'https://github.com/Edln1/SynapsesM/releases/download/desktop-v0.1.1/Synapses-Setup-0.1.1.exe';
   window.synapsesAppEntry = Object.freeze({
     mobile: mobile(),
-    android: typeof navigator !== 'undefined' && /Android/i.test(navigator.userAgent || ''),
-    apk: 'https://research.synapses.cloud/downloads/ava-preview.apk?v=0.1.2',
+    android: android,
+    windows: windows,
+    apk: apkUrl,
+    desktop: windowsUrl,
+    downloadHref: android ? apkUrl : windows ? windowsUrl : '',
+    downloadName: android ? 'Ava-preview-0.1.3.apk' : windows ? 'Synapses-Setup-0.1.1.exe' : '',
+    downloadLabel: android ? 'Download Ava for Android' : windows ? 'Download Synapses for Windows' : 'Downloads for Android and Windows',
     href: destination(),
     label: mobile() ? 'Open Ava' : 'Open app',
     destination: destination
