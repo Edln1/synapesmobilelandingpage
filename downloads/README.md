@@ -1,6 +1,6 @@
 # Ava Android preview
 
-`ava-preview.apk` is a signed debug test build of the separate personal Ava app, package `com.synapses.ava.preview`, version `0.1.12-preview`, for Android 8 and newer. It can be installed alongside the existing Synapses app.
+`ava-preview.apk` is a signed debug test build of the separate personal Ava app, package `com.synapses.ava.preview`, version `0.1.13-preview`, for Android 8 and newer. It can be installed alongside the existing Synapses app.
 
 The app opens the hosted Ava conversation. It needs internet access and the normal account/service access. This is not an offline model or avatar renderer. It uses the existing email/password sign-in flow; external browser OAuth callbacks are not configured in this preview.
 
@@ -15,4 +15,4 @@ Version 0.1.2 keeps the original animated voice icon in the Ava header, suppress
 Version 0.1.3 adds the saved-chat Home page, a single header mic for live speech, a separate opt-in composer speaker for read-aloud replies, and Home-aware Android Back navigation. The live mic stays inside Ava; selecting chats does not autofocus the keyboard.
 Version 0.1.4 keeps live speech in the Ava header with the green waveform, improves mobile chat navigation and motion, and adds a confirmed Delete action for individual conversations. The Home shortcut focuses a new message.
 
-Version 0.1.12 fixes reopening the mic menu after switching apps. With background voice enabled, start speech-to-speech in Ava, then use Pause mic or Resume mic in the Android notification. Stop voice ends the conversation and dismisses the notification.
+Version 0.1.13 shows Ava’s animated face on the loading screen and adds a Voice volume slider to the mic’s long-press menu. The slider adjusts Ava’s replies independently of other media. With background voice enabled, use Pause mic or Resume mic in the Android notification. Stop voice ends the conversation and dismisses the notification.
